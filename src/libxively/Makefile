@@ -1,5 +1,5 @@
 XI_OBJDIR ?= $(CURDIR)
-include ../../Makefile.include
+include ../Makefile.include
 
 XI_COMM_LAYER ?= posix
 
