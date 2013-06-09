@@ -11,6 +11,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/ioctl.h>
 #include <fcntl.h>
 #include <linux/i2c.h>
 #include <linux/i2c-dev.h>
@@ -22,6 +23,10 @@ int ina_getDieId(int fd,unsigned short* id);
 int ina_getVoltage(int fd,int* vol);
 int ina_getCurrent(int fd,int* curr);
 static int ina_getValue(int fd,int addr,int* val);
+
+int ina_init(int fd)
+{
+}
 
 int ina_getDieId(int fd,unsigned short* id)
 {
@@ -69,6 +74,7 @@ int ina_getCurrent(int fd,int* curr)
   int result;
   
   result = ina_getValue(fd,4,curr);
+  *curr += *curr >> 2;
 
   return(result);
 }

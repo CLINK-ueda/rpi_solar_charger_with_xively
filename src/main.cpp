@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -16,6 +17,9 @@
 #include <xi_helpers.h>
 #include <xi_err.h>
 #include "vimeter.h"
+#include "conf_xively.h"
+
+bool update_xively(char* api_key,char* feed_id,char* datastream_id,int val);
 
 int main(void)
 {
@@ -25,7 +29,7 @@ int main(void)
   signed int c;
   char buff[20];
 
-  fd = open("/dev/i2c-1",O_RDWR);
+  fd = open("/dev/i2c-0",O_RDWR);
   if(fd < 0){
     printf("i2c open error\n");
     exit(1);
@@ -37,8 +41,9 @@ int main(void)
 
     update_xively(XIVELY_API_KEY,XIVELY_FEED_ID,"VOLTAGE",v);
     update_xively(XIVELY_API_KEY,XIVELY_FEED_ID,"CURRENT",c);
-
-    sleep(1); //wait 1[sec]
+    
+    printf("Voltage = %d[mV],Current = %d[mA]\n",v,c);
+    sleep(2);
   }
 
   close(fd);
@@ -46,12 +51,12 @@ int main(void)
 
 //    "example_01 api_key feed_id datastream_id value\n";
 
-bool update_xively(char* api_key,char* feed_id,char* datastream_id* datastream_id,int val)
+bool update_xively(char* api_key,char* feed_id,char* datastream_id,int val)
 {
     xi_context_t* xi_context = xi_create_context(XI_HTTP,api_key,atoi(feed_id));
 
     // check if everything works
-    if( *xi_context == 0 )
+    if( xi_context == 0 )
     {
         return false;
     }
@@ -66,7 +71,7 @@ bool update_xively(char* api_key,char* feed_id,char* datastream_id* datastream_i
     }
 
     xi_datastream_update( xi_context
-            , atoi( argv[ 2 ] ), argv[ 3 ]
+            , atoi( feed_id ), datastream_id
             , &datapoint.value );
 
     printf( "err: %d - %s\n", ( int ) xi_get_last_error(), xi_get_error_string( xi_get_last_error() ) );
