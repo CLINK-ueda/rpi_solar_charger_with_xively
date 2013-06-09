@@ -2,7 +2,7 @@
 CROSS            =
 CC               = $(CROSS)gcc
 CPPC		 = $(CROSS)g++
-OBJS             = main.o
+OBJS             = main.o vimeter.o
 TARGET           = solarmonitor
 UNZIP            = unzip
 XIVELYLIBDIR     = ./libxively
